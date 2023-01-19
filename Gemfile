@@ -25,3 +25,8 @@ gem 'tty-logger', '~> 0.6.0'        # https://github.com/piotrmurach/tty-logger
 gem 'tty-link', '~> 0.1.1'          # https://github.com/piotrmurach/tty-link
 gem 'tty-option', '~> 0.2.0'        # https://github.com/piotrmurach/tty-option
 gem 'tty-table', '~> 0.12.0'        # https://github.com/piotrmurach/tty-table
+
+gem "benchmark-ips", "~> 2.7.2"
+gem 'pry-rescue', '~> 1.5', '>= 1.5.2'
+gem "pry"
+gem 'awesome_print', '~> 1.9', '>= 1.9.2'

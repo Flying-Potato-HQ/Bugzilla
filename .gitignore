@@ -10,3 +10,14 @@
 
 # rspec failure tracking
 .rspec_status
+
+*.swp
+*.swo
+*.gem
+*.rbc
+
+.bundle
+.config
+.yardoc
+
+

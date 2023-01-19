@@ -11,5 +11,6 @@ require "Bugzilla"
 # require "pry"
 # Pry.start
 
-require "irb"
-IRB.start(__FILE__)
+require "pry"
+self.include Bugzilla
+Pry.start(__FILE__)

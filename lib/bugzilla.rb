@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
+require_relative "Bugzilla/utilities/tty_helpers"
+require_relative "Bugzilla/utilities/debug_helper"
+require_relative "Bugzilla/formatter"
 require_relative "Bugzilla/version"
 
+require 'awesome_print'
+
 module Bugzilla
-  class Error < StandardError; end
+  include Formatter
+  include TTYHelpers
+
+  Object.include DebugHelper
 
   def trace_history
     @history ||= TraceHistory.new
@@ -23,17 +31,17 @@ module Bugzilla
     menu(res)
   end
 
-  def stack(&block)
-    @bind = block.call.send(:binding)
-    generate_trace(@bind)
-
-    stack.map do |loc|
-      string = loc.path.to_s.gsub("/home/ruby/core/repo", "")
-      puts string.yellow
-    end
-
-    nil
-  end
+  # def stack(&block)
+  #   @bind = block.call.send(:binding)
+  #   generate_trace(@bind)
+  #
+  #   stack.map do |loc|
+  #     string = loc.path.to_s.gsub("/home/ruby/core/repo", "")
+  #     puts string.yellow
+  #   end
+  #
+  #   nil
+  # end
 
   def menu(trace_result)
     return unless trace_result
@@ -66,16 +74,6 @@ module Bugzilla
 
   def generate_trace(binding)
     stack = binding.send(:caller_locations)
-
-    stack = stack.reject { |string| string.to_s =~ /\/(gems|rubies|middleware|)\// }
-    stack = stack.reject do |loc|
-      loc.to_s.include?("goldiloader") ||
-        loc.to_s.include?("application_controller") ||
-        loc.to_s.include?("prosopite") ||
-        loc.to_s.include?("pry") ||
-        loc.to_s.include?("backend/platform") ||
-        loc.to_s.include?("irb") ||
-        loc.to_s.include?("/bin/rails")
-    end
+    clean_trace(stack)
   end
 end
