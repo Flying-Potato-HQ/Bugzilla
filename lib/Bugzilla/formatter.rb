@@ -2,9 +2,16 @@
 
 module Formatter
 
-  BLACKLISTED_LOCATIONS = %w[
-    gems rubies middleware goldiloader application_controller prosopite backend/platform irb
-      irb_binding /bin/rails:5 -e:1
+  # BLACKLISTED_LOCATIONS = %w[
+  #   gems rubies middleware goldiloader application_controller prosopite backend/platform irb
+  #     irb_binding /bin/rails:5 -e:1
+  # ].freeze
+
+  BLACKLISTED_LOCATIONS = [
+    "/Users/samuelodonnell/.rvm/gems/ruby-3.2.0-preview3/gems/pry-0.14.1/lib/pry/",
+    "/Users/samuelodonnell/.rvm/gems/ruby-3.2.0-preview3/gems/pry-0.14.1/lib/pry/",
+    "/Users/samuelodonnell/.rvm/gems/ruby-3.2.0-preview3/gems/tty-screen-0.8.1/lib/tty/screen.rb",
+    "<internal:"
   ].freeze
 
   TRUNC_PATH = [

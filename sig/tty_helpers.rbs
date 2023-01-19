@@ -3,6 +3,8 @@ module TTYHelpers
 
   def center_align: -> untyped
 
+  def get_standardised_offset: -> untyped
+
   def left_align: -> untyped
 
   def prompt: -> untyped

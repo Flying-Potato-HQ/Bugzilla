@@ -26,6 +26,12 @@ module TTYHelpers
     " " * (TTY::Screen.width - string.length - margin) + string
   end
 
+  def get_standardised_offset(array, offset: 2)
+    # find the length of the longest element
+    longest = array.map(&:length).max
+    length = longest + offset
+  end
+
   private
 
   def terminal_width

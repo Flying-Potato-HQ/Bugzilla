@@ -24,14 +24,14 @@ module Bugzilla
 
   def mini_trace(&block)
     events = []
-    trace = TracePoint.new(:call, :return) do |tp|
-      events << Tracer.new(tp)
+    trace = TracePoint.new(:call, :return, :raise) do |tp|
+      events << Tracer.new(tp) unless BLACKLISTED_LOCATIONS.select { |p|
+        p.include? tp.path }.any?
     end
 
     trace.enable
     block.call
     trace.disable
-    t = events.first
     trace_log_menu(events)
   end
 
@@ -39,11 +39,18 @@ module Bugzilla
 
   def trace_log_menu(trace_result)
     return unless trace_result
+
     system "clear"
+    Binding
 
     prompt.select("Select a line to inspect", per_page: 20) do |menu|
+      offset = get_standardised_offset(trace_result.select {|e| e.event == :call || e.event == :return}.map(&:short_loc))
+
       trace_result.each do |trace|
-        menu.choice trace.path.to_s.yellow, -> { trace.trace_menu; trace_log_menu(trace) }
+        next unless trace.event == :call || trace.event == :return
+
+        menu.choice trace.pp_to_s(offset), lambda {
+          trace.trace_menu; trace_log_menu(trace_result) }
       end
       menu.choice "Back".white, -> { }
     end
