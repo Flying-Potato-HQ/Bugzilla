@@ -3,6 +3,7 @@
 require_relative "Bugzilla/utilities/tty_helpers"
 require_relative "Bugzilla/utilities/debug_helper"
 require_relative "Bugzilla/formatter"
+require_relative "Bugzilla/tracer"
 require_relative "Bugzilla/version"
 
 require 'awesome_print'
@@ -11,37 +12,20 @@ module Bugzilla
   include Formatter
   include TTYHelpers
 
-  Object.include DebugHelper
+  # Object.include DebugHelper
 
-  def trace_history
-    @history ||= TraceHistory.new
-  end
   def trace(&block)
-    @bind = block.call.send(:binding)
-    generate_trace(@bind)
+    bind = block.call.send(:binding)
+    stack = generate_trace(bind)
     res = []
 
     stack.map do |loc|
-      res << Tracer.new(loc, @bind)
-      # string = loc.path.to_s.gsub("/home/ruby/core/repo", "")
-      # puts string.yellow
+      res << Tracer.new(loc, bind)
     end
 
-    trace_history << res
     menu(res)
   end
 
-  # def stack(&block)
-  #   @bind = block.call.send(:binding)
-  #   generate_trace(@bind)
-  #
-  #   stack.map do |loc|
-  #     string = loc.path.to_s.gsub("/home/ruby/core/repo", "")
-  #     puts string.yellow
-  #   end
-  #
-  #   nil
-  # end
 
   def menu(trace_result)
     return unless trace_result

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
+require_relative "../formatter"
+
 module Bugzilla
   module DebugHelper
 
-    include Bugzilla::Formatter
+    include Formatter
 
     def stack
       stack = clean_trace

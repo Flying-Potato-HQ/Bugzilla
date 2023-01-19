@@ -1,5 +1,7 @@
 # frozen_string_literal: true
-
+require "tty-prompt"
+require "tty-box"
+require "tty-table"
 module TTYHelpers
   def prompt
     TTY::Prompt.new
