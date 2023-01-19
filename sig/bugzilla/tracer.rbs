@@ -1,0 +1,39 @@
+module Bugzilla
+  class Tracer
+    ACTIONS: untyped
+
+    @attrs: untyped
+    @exception: untyped
+    @instance_variables: untyped
+    @local_variables: untyped
+
+    @parent_bind: untyped
+
+    @res: untyped
+    @return_value: untyped
+    @trace_info: untyped
+
+    attr_reader exception: untyped
+    attr_accessor parent_blind: untyped
+
+    attr_accessor trace_info: untyped
+
+    def trace_menu: -> untyped
+
+    def variables: -> untyped
+
+    def view_source: -> untyped
+
+    def view_variables: -> untyped
+
+    private
+
+    def bind_generic: -> untyped
+
+    def bind_parent_bind: -> untyped
+
+    def bind_source: -> untyped
+
+    def lineno: -> untyped
+  end
+end

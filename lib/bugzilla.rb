@@ -1,63 +1,82 @@
 # frozen_string_literal: true
 
+require_relative "../example/entry"
 require_relative "Bugzilla/utilities/tty_helpers"
 require_relative "Bugzilla/utilities/debug_helper"
+require_relative "Bugzilla/utilities/generic_helpers"
 require_relative "Bugzilla/formatter"
 require_relative "Bugzilla/tracer"
 require_relative "Bugzilla/version"
 
-require 'awesome_print'
+require "awesome_print"
 
 module Bugzilla
   include Formatter
   include TTYHelpers
+  include GenericHelpers
+  include Entry
 
-  # Object.include DebugHelper
+  Object.include DebugHelper
 
-  def trace(&block)
-    bind = block.call.send(:binding)
-    stack = generate_trace(bind)
-    res = []
+  def dot
+    mini_trace { terminal_width * terminal_height; example}
+  end
 
-    stack.map do |loc|
-      res << Tracer.new(loc, bind)
+  def mini_trace(&block)
+    events = []
+    trace = TracePoint.new(:call, :return) do |tp|
+      events << Tracer.new(tp)
     end
 
-    menu(res)
+    trace.enable
+    block.call
+    trace.disable
+    t = events.first
+    trace_log_menu(events)
   end
 
 
-  def menu(trace_result)
+
+  def trace_log_menu(trace_result)
     return unless trace_result
-    system 'clear'
+    system "clear"
 
     prompt.select("Select a line to inspect", per_page: 20) do |menu|
       trace_result.each do |trace|
-        menu.choice trace.trace_info.to_s.gsub("/home/ruby/core/repo", "").yellow, -> { menu_trace(trace); menu(trace_result) }
+        menu.choice trace.path.to_s.yellow, -> { trace.trace_menu; trace_log_menu(trace) }
       end
-      menu.choice "Back".white, -> {  }
+      menu.choice "Back".white, -> { }
     end
   end
 
-  def menu_trace(trace)
-    system 'clear'
-
-    puts "Instance Variables: ".white + "#{trace.__binding__.instance_variables.map {|var| "#{var.to_s}: #{var.instance_variable_get(var)}"}}".yellow
-
-    prompt.select("Select an option", per_page: 20) do |menu|
-      menu.choice "View Source".green, -> { trace.view_source; await_input; menu_trace(trace) }
-      menu.choice "[Console] Bind Generic".green, -> { trace.bind_generic; await_input; menu_trace(trace) }
-      menu.choice "[Console] Binding".green, -> { trace.bind_source; await_input; menu_trace(trace) }
-      menu.choice "[Console] Block Binding".green, -> { trace.bind_source; await_input; menu_trace(trace) }
-      menu.choice "View Variables".green, -> { trace.view_variables; await_input; menu_trace(trace) }
-      menu.choice "Back".white, -> {  }
-    end
+  def example
+    calculate_thing(dogs: 24, cats: 15, birds: 3)
   end
+
+  # def menu_trace(trace)
+  #   system "clear"
+  #
+  #   puts "Instance Variables: ".white + trace.instance_variables.join(" ").to_s.yellow
+  #   puts "Local Variables: ".white + trace.local_variables.join(" ").to_s.yellow + "\n"
+  #
+  #   prompt.select("Select an option", per_page: 20) do |menu|
+  #     menu.choice "View Source".green, -> { trace.view_source; await_input; menu_trace(trace) }
+  #     menu.choice "[Console] Bind Generic".green, -> { trace.bind_generic; await_input; menu_trace(trace) }
+  #     menu.choice "[Console] Binding".green, -> { trace.bind_source; await_input; menu_trace(trace) }
+  #     menu.choice "[Console] Block Binding".green, -> { trace.bind_source; await_input; menu_trace(trace) }
+  #     menu.choice "View Variables".green, -> { trace.view_variables; await_input; menu_trace(trace) }
+  #     menu.choice "Back".white, -> {  }
+  #   end
+  # end
 
   private
 
-  def generate_trace(binding)
-    stack = binding.send(:caller_locations)
-    clean_trace(stack)
+  def generate_trace(binding, succinct: false)
+    stack_trace = binding.send(:caller_locations)
+    stack_trace = clean_trace(stack_trace) if succinct
+
+    stack_trace
   end
+
+
 end

@@ -1,0 +1,3 @@
+module Menu
+  def menu: -> untyped
+end

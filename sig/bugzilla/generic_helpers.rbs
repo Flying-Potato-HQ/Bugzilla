@@ -1,0 +1,5 @@
+module Bugzilla
+  module GenericHelpers
+    def project_dir: -> untyped
+  end
+end

@@ -8,7 +8,8 @@ module Formatter
   ].freeze
 
   TRUNC_PATH = [
-    "/Users/samuelodonnell/.rvm/gems/ruby-3.2.0-preview3/gems/pry-0.14.1/lib/pry"
+    "/Users/samuelodonnell/.rvm/gems/ruby-3.2.0-preview3/gems/pry-0.14.1/lib/pry",
+    "/Users/samuelodonnell/Documents/Projects/Personal"
   ].freeze
 
   def full_clean_trace(traces)

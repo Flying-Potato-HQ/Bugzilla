@@ -1,5 +1,15 @@
 module TTYHelpers
   def await_input: -> untyped
 
+  def center_align: -> untyped
+
+  def left_align: -> untyped
+
   def prompt: -> untyped
+
+  private
+
+  def terminal_height: -> untyped
+
+  def terminal_width: -> untyped
 end

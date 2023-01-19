@@ -16,16 +16,16 @@ module Bugzilla
       nil
     end
 
-    def caller
-      caller = super
-      clean_trace(caller)
-    end
+    # def caller(verbose: false)
+    #   caller = super
+    #   clean_trace(caller) unless verbose
+    # end
 
     def calling_method
       caller[0][/`([^']*)'/, 1]
     end
 
-    def calling_method
+    def caller_loc
       caller[0].split("/").last
     end
   end
