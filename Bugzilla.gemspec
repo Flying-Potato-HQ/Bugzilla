@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.email = ["potatobaron89@gmail.com"]
 
   spec.summary = "Super early alpha debugging tool"
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
+  spec.description = "Super early alpha debugging tool"
+  spec.homepage = "https://github.com/Flying-Potato-HQ/Bugzilla"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
