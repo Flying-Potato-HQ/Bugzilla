@@ -32,16 +32,13 @@ module Bugzilla
         "Back": -> { nil },
         "Quit": -> { exit }
       }
-
-      @actions.merge({ "Return Value": return_value }) if @return_value
-      @actions.merge({ "Exception": exception }) if @exception
     end
-    
+
     def overview
       puts "    - - - -Event: #{event}".yellow + " #{method_id}".white
       puts " Instance Variables: ".white + instance_variables.join(" ").to_s.yellow
       puts "#{" Local Variables: ".white}#{local_variables.join(" ").to_s.yellow}\n"
-      
+
       puts "\n   #{path}".white + " #{lineno}".yellow
       puts "   Params: ".white + params.to_s.white if params
       puts "   Return Value: ".white + return_value.to_s.white if return_value

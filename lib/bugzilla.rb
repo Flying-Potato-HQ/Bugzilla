@@ -60,21 +60,6 @@ module Bugzilla
     calculate_thing(dogs: 24, cats: 15, birds: 3)
   end
 
-  # def menu_trace(trace)
-  #   system "clear"
-  #
-  #   puts "Instance Variables: ".white + trace.instance_variables.join(" ").to_s.yellow
-  #   puts "Local Variables: ".white + trace.local_variables.join(" ").to_s.yellow + "\n"
-  #
-  #   prompt.select("Select an option", per_page: 20) do |menu|
-  #     menu.choice "View Source".green, -> { trace.view_source; await_input; menu_trace(trace) }
-  #     menu.choice "[Console] Bind Generic".green, -> { trace.bind_generic; await_input; menu_trace(trace) }
-  #     menu.choice "[Console] Binding".green, -> { trace.bind_source; await_input; menu_trace(trace) }
-  #     menu.choice "[Console] Block Binding".green, -> { trace.bind_source; await_input; menu_trace(trace) }
-  #     menu.choice "View Variables".green, -> { trace.view_variables; await_input; menu_trace(trace) }
-  #     menu.choice "Back".white, -> {  }
-  #   end
-  # end
 
   private
 
