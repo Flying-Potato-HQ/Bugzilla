@@ -8,7 +8,6 @@ gemspec
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
 gem "rubocop", "~> 1.21"
-gem "tty-prompt", "~> 0.23"
 
 ### TTY
 gem 'tty', '~> 0.10.0'        # https://github.com/piotrmurach/tty
