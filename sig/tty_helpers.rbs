@@ -1,0 +1,5 @@
+module TTYHelpers
+  def await_input: -> untyped
+
+  def prompt: -> untyped
+end
