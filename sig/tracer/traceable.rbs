@@ -1,0 +1,9 @@
+module Tracer
+  class Traceable
+    @attrs: untyped
+
+    private
+
+    def build_attrs: -> untyped
+  end
+end

@@ -1,0 +1,13 @@
+class Tracer
+  @block: untyped
+  @config: untyped
+  @executions: untyped
+
+  attr_accessor block: untyped
+
+  attr_accessor executions: untyped
+
+  def execute_trace: -> untyped
+
+  def trace: -> untyped
+end

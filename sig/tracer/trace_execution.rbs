@@ -1,0 +1,10 @@
+module Tracer
+  class TraceExecution
+    @block: untyped
+    @executions: untyped
+
+    private
+
+    def begin_trace: -> untyped
+  end
+end

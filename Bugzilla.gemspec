@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/Bugzilla/version"
+require File.expand_path('lib/bugzilla/version', __dir__)
 
 Gem::Specification.new do |spec|
   spec.name = "Bugzilla"

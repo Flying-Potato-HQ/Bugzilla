@@ -1,74 +1,55 @@
 # frozen_string_literal: true
 
-require_relative "../example/entry"
-require_relative "Bugzilla/utilities/tty_helpers"
-require_relative "Bugzilla/utilities/debug_helper"
-require_relative "Bugzilla/utilities/generic_helpers"
-require_relative "Bugzilla/formatter"
-require_relative "Bugzilla/tracer"
-require_relative "Bugzilla/version"
+# Core
+require "bugzilla/version"
 
-require "awesome_print"
+require "bugzilla/tracer/config//attributable"
+require "bugzilla/tracer/config/lazy_value"
+require "bugzilla/tracer/config/memoized_value"
+require "bugzilla/tracer/config/value"
+require "bugzilla/tracer/config"
 
-module Bugzilla
-  include Formatter
-  include TTYHelpers
-  include GenericHelpers
-  include Entry
+require "bugzilla/tracer"
+require "bugzilla/exceptions"
+require "bugzilla/hooks"
 
-  Object.include DebugHelper
+# Tracer Module
+require "bugzilla/tracer/traceable"
+require "bugzilla/tracer/trace_execution"
 
-  def dot
-    mini_trace { terminal_width * terminal_height; example}
+require "bugzilla/helpers/string"
+
+def fake_trace!
+  load_fixtures # add condition?
+  tracer = Tracer.new { birds_life }.trace do
+    birds_life
   end
 
-  def mini_trace(&block)
-    events = []
-    trace = TracePoint.new(:call, :return, :raise) do |tp|
-      events << Tracer.new(tp) unless BLACKLISTED_LOCATIONS.select { |p|
-        p.include? tp.path }.any?
-    end
+  puts "\n\n Count: #{tracer.executions.last.events.count}"
+  tracer
+end
 
-    trace.enable
-    block.call
-    trace.disable
-    trace_log_menu(events)
-  end
+def load_fixtures
+  require_relative "../spec/fixtures/fake_code/value"
+  require_relative "../spec/fixtures/fake_code/attributable"
+  require_relative "../spec/fixtures/fake_code/statable"
+  require_relative "../spec/fixtures/fake_code/locationable"
+  require_relative "../spec/fixtures/fake_code/flyable"
+  require_relative "../spec/fixtures/fake_code/animal"
+  require_relative "../spec/fixtures/fake_code/dog"
+  require_relative "../spec/fixtures/fake_code/bird"
+end
 
+load_fixtures # add condition?
 
+def birds_life
+  bird = Bird.new(name: "Tweety", age: 2, wingspan: 10, color: "yellow and blue", favourite_food: "seeds, and French cheese")
+  bird.fly
+  bird.eat
+  bird.sleep
 
-  def trace_log_menu(trace_result)
-    return unless trace_result
-
-    system "clear"
-    Binding
-
-    prompt.select("Select a line to inspect", per_page: 20) do |menu|
-      offset = get_standardised_offset(trace_result.select {|e| e.event == :call || e.event == :return}.map(&:short_loc))
-
-      trace_result.each do |trace|
-        next unless trace.event == :call || trace.event == :return
-
-        menu.choice trace.pp_to_s(offset), lambda {
-          trace.trace_menu; trace_log_menu(trace_result) }
-      end
-      menu.choice "Back".white, -> { }
-    end
-  end
-
-  def example
-    calculate_thing(dogs: 24, cats: 15, birds: 3)
-  end
-
-
-  private
-
-  def generate_trace(binding, succinct: false)
-    stack_trace = binding.send(:caller_locations)
-    stack_trace = clean_trace(stack_trace) if succinct
-
-    stack_trace
-  end
-
-
+  dog = Dog.new(name: "Korra")
+  dog.bark
+  dog.wag_tail
+  dog.be_cute
 end

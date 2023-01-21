@@ -1,0 +1,13 @@
+module Bugzilla
+  module Tracer
+    class TraceExecution
+      @block: untyped
+
+      private
+
+      def begin_trace: -> untyped
+
+      def run_trace: -> untyped
+    end
+  end
+end
