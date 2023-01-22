@@ -39,7 +39,11 @@ class Animal < Simulatable
     if method_name.to_s.end_with?("=")
       instance_variable_set("@#{method_name.to_s[0..-2]}", args.first)
     else
-      instance_variable_get("@#{method_name}")
+      begin
+        instance_variable_get("@#{method_name}")
+      rescue => e
+        puts "WARNING: #{e.message}.  Value passed: #{method_name}"
+      end
     end
   end
 

@@ -10,10 +10,12 @@ module Bugzilla
       # Creates a new Traceable object, it excepts to be passed a TracePoint
       # @param [TracePoint] trace_point The arguments passed
 
-      attr_accessor :attrs, :args, :locals, :instance_vars
+      attr_accessor :attrs, :args, :locals, :instance_vars, :itself, :object_id
       def initialize(trace_point)
         raise ArgumentError, "Expected argument to be a TracePoint, got #{trace_point.class}" unless trace_point.is_a?(TracePoint)
 
+        @itself = trace_point.binding.eval("self")
+        @object_id = trace_point.binding.eval("self.object_id")
         @attrs = build_attrs(trace_point)
         @args = extract_arguments(trace_point)
         @locals = extract_locals(trace_point)

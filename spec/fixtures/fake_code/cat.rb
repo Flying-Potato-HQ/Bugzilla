@@ -12,8 +12,8 @@ class Cat < Animal
     puts "#{self.name} is being cute"
   end
 
-  def bark
-    puts "#{self.name} barks at the neighbour's cat"
+  def meow
+    puts "#{self.name} meows contentedly"
   end
 
   def wag_tail

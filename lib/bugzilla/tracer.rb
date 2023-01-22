@@ -2,41 +2,56 @@
 
 module Bugzilla
 
-  def clean_trace(backtrace)
-    res = backtrace.map do |trace|
-      trace = trace.split("/lib/").last
-      CodeRay.scan(trace, :ruby).term
-    end
-
-    puts res
-  end
-
   class Tracer
 
-    attr_accessor :block, :config, :executions
-    def initialize(**args, &block)
-      raise ArgumentError, "Block required" unless block_given?
+    include Handlers
+    include Enumerable
 
-      @block = block
-      @executions = []
+    attr_accessor :config, :trace, :events
+
+    def initialize(events = [], **args)
+      @events = events
+      @trace = nil
+
       @config = Config.new(**args)
-
-      @executions << TraceExecution.new
+      @trace_complete = false
     end
 
+    def trace!(&block)
+      raise ArgumentError, "Block required" unless block_given?
 
-    def trace(&block)
       begin
-        last_execution.perform(&block)
-      rescue => exception
-        clean_trace(exception.backtrace)
+        @trace = self.perform!(&block)
+        @trace_complete = true
+        @trace
+      rescue => e
+        clean_trace(e)
       end
     end
 
+    def perform!(&block)
+      raise ArgumentError, "Block required" unless block_given?
 
-    def last_execution
-      @executions.last
+      @trace = TracePoint.new(:call, :return) do |tp|
+        next if tp.defined_class.to_s.in?(["Pry", "Bugzilla"])
+
+        # binding.pry
+        @events.shift if @events.size > 1000
+        @events << Traceable.new(tp)
+      end
+
+      @trace.enable(&block)
+      @trace_complete = true
+
+      self
     end
 
+    def trace_complete?
+      @trace_complete
+    end
+
+    def each
+      @events.each { |item| yield item }
+    end
   end
 end

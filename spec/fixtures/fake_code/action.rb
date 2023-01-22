@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+
 class Action
   def initialize(action_type, target, &block)
     @action_type = action_type

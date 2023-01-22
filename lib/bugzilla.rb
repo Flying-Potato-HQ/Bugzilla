@@ -2,11 +2,14 @@
 
 # Core
 require "awesome_print"
+require "yaml"
 
 require "bugzilla/version"
+require "bugzilla/clean_trace"
 
 require "bugzilla/helpers/attributable"
 
+require "bugzilla/tracer/handlers"
 require "bugzilla/tracer/config//attributable"
 require "bugzilla/tracer/config/lazy_value"
 require "bugzilla/tracer/config/memoized_value"
@@ -15,6 +18,7 @@ require "bugzilla/tracer/config"
 require "bugzilla/tracer/event_group"
 
 require "bugzilla/tracer"
+require "bugzilla/tracer/search_results"
 require "bugzilla/exceptions"
 require "bugzilla/hooks"
 
@@ -24,27 +28,20 @@ require "bugzilla/tracer/trace_execution"
 
 require "bugzilla/helpers/overrides"
 
-def fake_trace!
-  tracer = Tracer.new { birds_life }.trace do
-    birds_life
-  end
-  tracer
-end
-
 def thing!
   sim = Simulation.new(dogs: 12, cats: 4, birds: 2)
   sim.prepare
   sim.run_turn!
 end
 
-def trace!
-  tracer = Tracer.new { birds_life }.trace do
+def another!
+  trace! do
     sim = Simulation.new(dogs: 12, cats: 4, birds: 2)
     sim.prepare
+    sim.simulate!
   end
-
-  tracer
 end
+
 
 def load_fixtures
   require_relative "../spec/fixtures/fake_code/actionable"
@@ -67,14 +64,16 @@ end
 
 load_fixtures # add condition?
 
-def birds_life
-  bird = Bird.new(name: "Tweety", age: 2, wingspan: 10, color: "yellow and blue", favourite_food: "seeds, and French cheese")
-  bird.fly
-  bird.eat
-  bird.sleep
 
-  dog = Dog.new(name: "Korra")
-  dog.bark
-  dog.wag_tail
-  dog.be_cute
+
+module Bugzilla
+  class Error < StandardError; end
+
+  include CleanTrace
+
+  def trace!(&block)
+    Tracer.new { block }.trace! do
+      block.call
+    end
+  end
 end

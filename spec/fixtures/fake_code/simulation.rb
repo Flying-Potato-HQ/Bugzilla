@@ -3,6 +3,7 @@
 class Simulation
   include Attributable
 
+  attr_accessor :start_config, :log, :state
   # attribute :car
   def initialize(**args)
     raise ArgumentError unless args.keys.all? { |k| VALID_ARGS.include?(k) }

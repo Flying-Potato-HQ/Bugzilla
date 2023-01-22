@@ -27,6 +27,6 @@ class Simulatable
   end
 
   def random_action!
-    act!(*self.class::VALID_ACTIONS.sample)
+    act!(*self.class::VALID_ACTIONS.sample, self)
   end
 end

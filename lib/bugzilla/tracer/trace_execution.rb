@@ -2,35 +2,9 @@
 
 module Bugzilla
   class Tracer
-    class TraceExecution
-      attr_accessor :executions, :events
-      def initialize(**args)
-        @events = []
-        @trace = nil
-        @trace_complete = false
-      end
+    class TraceExecution < Tracer
 
-      def perform(&block)
-        raise ArgumentError, "Block required" unless block_given?
 
-        5 / 0
-
-        @trace = TracePoint.new(:call, :return) do |tp|
-          next if tp.defined_class.to_s.in?(["Pry", "Bugzilla"])
-
-          # @events.shift if @events.size > 100
-          @events << Traceable.new(tp)
-        end
-
-        @trace.enable(&block)
-        @trace_complete = true
-
-        self
-      end
-
-      def done?
-        @trace_complete
-      end
 
       def events_by_event(event)
         raise ArgumentError, INVALID_EVENT_MESSAGE unless valid_events.include?(event)
@@ -43,21 +17,7 @@ module Bugzilla
         @events.select {|e| e.defined_class.to_s == klass }
       end
 
-      def where_attr(attr, value, comparison = :==)
-        @events.select {|e| e.send(attr).send(comparison, value) }
-      end
 
-      def where_attr_not(attr, value, comparison = :==)
-        @events.select {|e| !e.send(attr).send(comparison, value) }
-      end
-
-      def where_attr_in(attr, values, comparison = :==)
-        @events.select {|e| values.include?(e.send(attr).send(comparison)) }
-      end
-
-      def where_attr_present(attr)
-        @events.select {|e| e.send(attr)&.present? }
-      end
 
       def has_instance_var?(var_name)
         var_name = var_name + "@" unless var_name.start_with?("@")
@@ -66,21 +26,6 @@ module Bugzilla
         @events.select {|e| e.instance_vars.keys.include?(var_name) }
       end
 
-      def summarise_events
-        @events.map(&:event).tally
-      end
-
-      def summarise_classes
-        @events.map(&:defined_class).tally
-      end
-
-      def summarise_methods
-        @events.map(&:method_id).tally
-      end
-
-      def raise_events
-        @events.select {|e| e.event == :raise }
-      end
 
       def sequence_overview
         last_event = { Calls: []}

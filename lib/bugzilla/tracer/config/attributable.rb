@@ -13,8 +13,11 @@ module Bugzilla
       # @api private
       module Attributable
         def attribute(attr_name)
+          @attributes = [] unless defined?(@attributes)
+          @attributes << attr_name
           define_method(attr_name) do
             value = ::Config::Value.new(instance_variable_get("@#{attr_name}"))
+            # value = ::Config::Value.new(instance_variable_get("@attributes")[attr_name])
             value.call
           end
 
