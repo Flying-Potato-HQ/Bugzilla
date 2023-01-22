@@ -27,5 +27,6 @@ gem "tty-tree", "~> 0.4.0"          # https://github.com/piotrmurach/tty-tree
 
 gem "awesome_print", "~> 1.9", ">= 1.9.2"
 gem "benchmark-ips", "~> 2.7.2"
+gem "coderay"
 gem "pry"
 gem "pry-rescue", "~> 1.5", ">= 1.5.2"

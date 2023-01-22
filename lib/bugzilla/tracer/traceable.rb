@@ -3,9 +3,14 @@
 module Bugzilla
   class Tracer
     class Traceable
+      extend Attributable
+
+      attributes :event, :lineno, :path, :method_id, :defined_class, :cached_binding, :params, :return_value, :exception
 
       # Creates a new Traceable object, it excepts to be passed a TracePoint
       # @param [TracePoint] trace_point The arguments passed
+
+      attr_accessor :attrs, :args, :locals, :instance_vars
       def initialize(trace_point)
         raise ArgumentError, "Expected argument to be a TracePoint, got #{trace_point.class}" unless trace_point.is_a?(TracePoint)
 
@@ -15,10 +20,55 @@ module Bugzilla
         @instance_vars = extract_instance(trace_point)
       end
 
+      def has_instance_var?(var_name)
+        var_name += "@" unless var_name.start_with?("@")
+
+        instance_vars.keys.include?(var_name)
+      end
+
+      def has_local_var?(var_name)
+        locals.keys.include?(var_name)
+      end
+
+      def caller_location
+        "#{method_id} at #{path}:#{lineno.to_s}"
+      end
+
+      def event
+        @attrs[:event]
+      end
+
+      def lineno
+        @attrs[:lineno]
+      end
+
+      def defined_class
+        @attrs[:defined_class]
+      end
+
+      def method_id
+        @attrs[:method_id]
+      end
+
       def path
         @attrs[:path]
       end
 
+      def params
+        @attrs[:params]
+      end
+
+      def return_value
+        @attrs[:return_value]
+      end
+
+      def exception
+        @attrs[:exception]
+      end
+
+      def cached_binding
+        @attrs[:cached_binding]
+      end
 
       private
 

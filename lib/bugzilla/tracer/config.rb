@@ -17,7 +17,7 @@ module Bugzilla
       # @return [Integer]
       attribute :max_stack_depth
 
-      def initialize
+      def initialize(**args)
         merge!(
           debug: true,
           max_stack_depth: 100

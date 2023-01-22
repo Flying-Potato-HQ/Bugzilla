@@ -114,6 +114,7 @@ DEPENDENCIES
   Bugzilla!
   awesome_print (~> 1.9, >= 1.9.2)
   benchmark-ips (~> 2.7.2)
+  coderay
   pry
   pry-rescue (~> 1.5, >= 1.5.2)
   rake (~> 13.0)

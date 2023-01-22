@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 module Bugzilla
+
+  def clean_trace(backtrace)
+    res = backtrace.map do |trace|
+      trace = trace.split("/lib/").last
+      CodeRay.scan(trace, :ruby).term
+    end
+
+    puts res
+  end
+
   class Tracer
 
     attr_accessor :block, :config, :executions
@@ -11,22 +21,18 @@ module Bugzilla
       @executions = []
       @config = Config.new(**args)
 
-      @executions << TraceExecution.new { @block }
+      @executions << TraceExecution.new
     end
 
-    # def execute_trace
-    #   @executions << TraceExecution.new(block: @block).trace
-    # end
 
     def trace(&block)
-      puts "Starting trace"
-      last_execution.begin_trace
-      puts "Running trace"
-      yield
-      puts "Ending trace"
-      last_execution.end_trace
-      puts "Trace complete"
+      begin
+        last_execution.perform(&block)
+      rescue => exception
+        clean_trace(exception.backtrace)
+      end
     end
+
 
     def last_execution
       @executions.last

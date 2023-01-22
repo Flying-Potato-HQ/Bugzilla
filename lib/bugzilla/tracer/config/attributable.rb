@@ -20,6 +20,10 @@ module Bugzilla
 
           attr_writer(attr_name)
         end
+
+        def attributes(*attr_names)
+          attr_names.each { |attr_name| attribute(attr_name) }
+        end
       end
     end
   end

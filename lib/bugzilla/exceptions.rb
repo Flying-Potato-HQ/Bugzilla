@@ -8,3 +8,4 @@ module Bugzilla
   end
 end
 
+

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-class Animal
+class Animal < Simulatable
   extend Attributable
+  extend Actionable
   extend Statable
   extend Locationable
 
@@ -12,12 +13,12 @@ class Animal
   attribute :color
   attribute :current_speed
 
-  location :current_location
-  location :current_direction
+  attribute :current_location
+  attribute :current_direction
 
-  state :is_sleeping
-  state :is_eating
-  state :is_drinking
+  attribute :is_sleeping
+  attribute :is_eating
+  attribute :is_drinking
 
   def initialize(**attrs)
     merge!(

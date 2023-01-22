@@ -90,6 +90,7 @@ module Bugzilla
           callable.call(*args, &block)
         rescue RescuableException => e
           errors << e
+          puts "Hello from Hooks"
           e
         end
       end.last

@@ -1,6 +1,8 @@
 module Bugzilla
   module Tracer
     class TraceExecution
+      INVALID_EVENT_MESSAGE: untyped
+
       @block: untyped
 
       private

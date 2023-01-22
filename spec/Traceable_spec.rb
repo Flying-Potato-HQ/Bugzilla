@@ -2,13 +2,10 @@
 
 RSpec.describe Bugzilla do
 
-  describe "Tracer::Config" do
-    before do
-      @tracer = Tracer.new { puts "Hello World" }
-    end
+  describe "Tracer::Traceable" do
+    @tracer = Tracer.new { @hello_world = "Hello World"; puts @hello_world }
 
-
-    it "has a max_stack_depth" do
+    it "can list instance variables of state" do
       expect(@tracer.config.max_stack_depth).to eq(100)
     end
 
@@ -20,10 +17,15 @@ RSpec.describe Bugzilla do
       expect(count).to be > 20
     end
 
-    it "Can do x" do
+    it "test 2" do
       sim = Simulation.new(dogs: 12, cats: 4, birds: 2)
       sim.prepare
-      sim.run_turn!
     end
+  end
+
+  def run_sim!
+    @sim = Simulation.new(dogs: 3, cats: 4, birds: 2)
+    @sim.prepare
+    @sim.run_sim!
   end
 end
