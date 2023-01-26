@@ -16,16 +16,11 @@ class Cat < Animal
     puts "#{self.name} meows contentedly"
   end
 
-  def wag_tail
-    puts "#{self.name} wags its tail"
-  end
-
   def default_attrs
     {
-      breed: "Kelpie",
+      breed: "Ragdoll",
       likes_water: true,
-      loves_walks: true,
-      favourite_food: "All!"
+      loves_tuna: true,
     }
   end
 

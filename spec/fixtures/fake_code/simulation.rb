@@ -19,8 +19,21 @@ class Simulation
 
   def prepare
     @start_config[:cats].times do
-      Cat::VALID_ACTIONS.sample
       @state[:cats] << Cat.new(
+        turn_born: @state[:turn], health: 100,
+        stamina: 100, hunger: 0, thirst: 0
+      )
+    end
+
+    @start_config[:dogs].times do
+      @state[:dogs] << Dog.new(
+        turn_born: @state[:turn], health: 100,
+        stamina: 100, hunger: 0, thirst: 0
+      )
+    end
+
+    @start_config[:birds].times do
+      @state[:birds] << Bird.new(
         turn_born: @state[:turn], health: 100,
         stamina: 100, hunger: 0, thirst: 0
       )

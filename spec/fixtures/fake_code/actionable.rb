@@ -18,14 +18,14 @@ module Actionable
   end
 
   ACTIONS = {
-    eat: ->(itself, amount, duration) { itself.modify_hunger(-amount) },
-    drink: ->(itself, amount, duration) { itself.modify_thirst(-amount) },
-    sleep: ->(itself, amount, duration) { itself.modify_stamina(amount) },
-    run: ->(itself, amount, duration) { itself.modify_stamina(-amount) },
-    walk: ->(itself, amount, duration) { itself.modify_stamina(-amount) },
-    swim: ->(itself, amount, duration) { itself.modify_stamina(-amount) },
-    climb: ->(itself, amount, duration) { itself.modify_stamina(-amount) },
-    jump: ->(itself, amount, duration) { itself.modify_stamina(-amount) },
+    eat: ->(itself, amount, duration) { itself.eat; itself.modify_hunger(-amount) },
+    drink: ->(itself, amount, duration) { itself.eat; itself.modify_thirst(-amount) },
+    sleep: ->(itself, amount, duration) { itself.sleep; itself.modify_stamina(amount) },
+    run: ->(itself, amount, duration) { itself.run; itself.modify_stamina(-amount) },
+    walk: ->(itself, amount, duration) { itself.walk; itself.modify_stamina(-amount) },
+    swim: ->(itself, amount, duration) { itself.swim; itself.modify_stamina(-amount) },
+    climb: ->(itself, amount, duration) { itself.climb; itself.modify_stamina(-amount) },
+    jump: ->(itself, amount, duration) { itself.jump; itself.modify_stamina(-amount) },
     meow: ->(itself, amount, duration) { itself.meow },
 
     rest: lambda { |itself, amount, duration|

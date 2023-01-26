@@ -30,6 +30,34 @@ class Animal < Simulatable
     puts "#{self.name} eats"
   end
 
+  def drink
+    puts "#{self.name} drinks"
+  end
+
+  def sleep
+    puts "#{self.name} sleeps"
+  end
+
+  def run
+    puts "#{self.name} runs"
+  end
+
+  def jump
+    puts "#{self.name} jumps"
+  end
+
+  def climb
+    puts "#{self.name} climbs"
+  end
+
+  def swim
+    puts "#{self.name} swims"
+  end
+
+  def walk
+    puts "#{self.name} walks"
+  end
+
   def merge!(config_hash)
     config_hash.each { |attr, value| __send__("#{attr}=", value) }
     self
