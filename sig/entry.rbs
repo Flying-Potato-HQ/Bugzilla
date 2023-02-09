@@ -1,3 +1,0 @@
-module Entry
-  def calculate_thing: -> untyped
-end

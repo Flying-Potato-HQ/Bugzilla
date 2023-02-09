@@ -1,7 +1,0 @@
-module Formatter
-  def clean_paths: -> untyped
-
-  def clean_trace: -> untyped
-
-  def full_clean_trace: -> untyped
-end

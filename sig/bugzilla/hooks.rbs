@@ -1,5 +1,0 @@
-module Bugzilla
-  class Hooks
-    def self.default: -> untyped
-  end
-end

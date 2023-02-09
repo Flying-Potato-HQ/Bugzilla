@@ -1,58 +1,46 @@
-# frozen_string_literal: true
-
 module Bugzilla
   class Tracer
     class Config
-      extend Attributable
+      include BacktraceCleaner
 
-      # @return [Hooks]
-      attribute :hooks
-
-      # @return [Boolean]
-      attribute :verbose
-
-      # @return [Boolean]
-      attribute :debug
-
-      # @return [Integer]
-      attribute :max_stack_depth
+      attr_accessor :colourise, :backtrace_cleaner, :ignored_paths, :level,
+                    :colour_opts
 
       def initialize(**args)
-        # TODO: Load defaults from defaults.yaml
-
-        merge!(
-          debug: true,
-          max_stack_depth: 100
-        )
-      end
-
-      def merge!(config_hash)
-        config_hash.each { |attr, value| __send__("#{attr}=", value) }
-        self
-      end
-
-      def merge(config_hash)
-        dup.merge!(config_hash)
-      end
-
-      def []=(attr, value)
-        @custom_attrs[attr.to_s] = Config::Value.new(value)
-      end
-
-      def [](attr)
-        @custom_attrs[attr.to_s].call
-      end
-
-      def method_missing(method_name, *args, &block)
-        if method_name.to_s.end_with?("=")
-          instance_variable_set("@#{method_name.to_s[0..-2]}", args.first)
-        else
-          instance_variable_get("@#{method_name}")
+        args.each do |key, value|
+          instance_variable_set("@#{key}", value)
         end
+
+        @level = args[:level] || :full
+        @colourise = args[:colourise] || false
+        @backtrace_cleaner = args[:backtrace_cleaner] || nil
+        @ignored_paths = args[:ignored_paths] || []
+
+        @colour_opts = {
+          event: args.dig(:colorize, :event) || COLORS[:purple],
+          path: args.dig(:colorize, :path) || COLORS[:blue],
+          lineno: args.dig(:colorize, :lineno) || COLORS[:light_red],
+          method_id: args.dig(:colorize, :method_id) || COLORS[:light_green],
+          args: args.dig(:colorize, :args) || COLORS[:light_blue],
+          defined_class: args.dig(:colorize, :defined_class) || COLORS[:blue],
+          return_value: args.dig(:colorize, :return_value) || COLORS[:light_green],
+          exception: args.dig(:colorize, :exception) || COLORS[:light_red],
+          instance_variables: args.dig(:colorize, :instance_variables) || COLORS[:cyan],
+          local_variables: args.dig(:colorize, :local_variables) || COLORS[:white],
+          object_id: args.dig(:colorize, :object_id) || COLORS[:yellow]
+        }
       end
 
-      def respond_to_missing?(method_name, include_all = false)
-        instance_variable_defined?("@#{method_name}")
+      def colorize?
+        @colourise
+      end
+
+      def defaults
+        {
+          level: :full,
+          colorize: true,
+          backtrace_cleaner: default_backtrace
+        }
       end
     end
   end

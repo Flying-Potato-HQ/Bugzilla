@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
+# frozen_string_literal: false
 
+require "pry" unless defined?(Pry)
 require "bundler/setup"
 require "Bugzilla"
-
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
 
@@ -11,6 +11,37 @@ require "Bugzilla"
 # require "pry"
 # Pry.start
 
-require "pry"
+class Speaker
+  def initialize
+    @speaker = "Some person"
+  end
+  def hello
+    dog = "dog"
+    cat = "cat"
+
+    say_hello
+  end
+
+  def say_hello
+    banana = "banana"
+    carrot = "carrot"
+
+    "#{carrot} + #{banana}"
+  end
+
+  def hello_word
+    word_1 = "Hello"
+    word_2 = "world"
+    "#{word_1} #{word_2}"
+  end
+end
+
+def do_thing
+  Tracer.perform! do
+    puts Speaker.new.hello
+  end
+end
+
+
 self.include Bugzilla
 Pry.start(__FILE__)
