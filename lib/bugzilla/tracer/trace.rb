@@ -6,10 +6,11 @@ module Bugzilla
 
       attr_accessor :itself, :args, :object_id, :instance_variables,
                     :path, :lineno, :method_id, :defined_class, :return_value,
-                    :raised_exception, :local_variables, :event
+                    :raised_exception, :local_variables, :event, :its_binding
 
       def initialize(tracepoint)
         @itself = tracepoint.binding.eval('self')
+        @its_binding = tracepoint.binding
         @method_id = tracepoint.method_id
         @args = extract_arguments(tracepoint)
         @object_id = @itself.object_id
@@ -30,7 +31,7 @@ module Bugzilla
       end
 
       def extract_arguments(trace)
-        param_names = trace.parameters.map(&:last)
+        param_names = trace.parameters.map(&:last).reject { |p| excluded_args.any?(p) }
         return [] if param_names.empty?
 
         param_names.map { |n| [n, trace.binding.eval(n.to_s)] }.to_h
@@ -43,27 +44,38 @@ module Bugzilla
       end
 
       def extract_local_vars
-        # binding.pry if method_id == :hello_word && event == :return
-        itself.send(:local_variables).map do |var|
-          { "#{var}": itself.local_variable_get(var) }
-        end
+        # TODO
+        []
       end
 
       def source_code(include_type: false)
-        # include_type ? type = itself.class.class == Class ? "class" : "module" : ""
-        # context = "\n#{type} #{defined_class.to_s.capitalize}\n\n".yellow
-        # context = "#{event}".blue + "#{defined_class.to_s}:#{path}#{lineno}\n"
-        context = ""
         source = get_method.source
 
-        eval_method_source(source)
-        "#{context}#{CodeRay.scan(source, :ruby).term}\n"
+        res = eval_method_source(source)
+        "#{CodeRay.scan(res, :ruby).term}\n"
       end
 
       def eval_method_source(source_code)
-        source_code = source_code.split("\n")[1..-2].join("\n")
+        res = []
+        line1 = source_code.split("\n").first
+        last_line = source_code.split("\n").last
+        source_code.split("\n")[1..-2].each do |line|
+          begin
+            val = its_binding.eval(line)
+            spaces = line.length >= 80 ? "   " : " " * (80 - line.length)
+            res << (val ? line + spaces + "#=> #{val}" : line)
+          rescue
+            next
+          rescue Exception # rubocop:disable Lint/RescueException
+            res << line
+          end
+        end.join("\n")
 
-        itself.send(:eval, source_code)
+        [line1, res, last_line].join("\n")
+      end
+
+      def run_method(method, **args)
+        its_binding.send(method, **args)
       end
 
       def method_source_location
@@ -72,6 +84,10 @@ module Bugzilla
 
       def get_method
         itself.method(method_id)
+      end
+
+      def excluded_args
+        %i[* ** &]
       end
     end
   end

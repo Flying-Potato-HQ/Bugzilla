@@ -4,28 +4,52 @@ module Bugzilla
 
   class Tracer
 
+    include Enumerable
+    include OutputHelper
+    include SearchHelper
+    include BacktraceCleaner
+
     delegate :backtrace_cleaner, to: :config
     delegate :colorize?, to: :config
     delegate :level, to: :config
     delegate :colour_opts, to: :config
+    delegate :gsub_filter!, to: :config
+    delegate :disable_filter, to: :config
+    delegate :watched_events, to: :config
 
-    include Enumerable
-    include BacktraceCleaner
 
-    attr_accessor :config, :traces
+    attr_accessor :config, :traces, :ignored_traces_count
 
     def initialize
       @config = Config.new
       @traces = []
+      @ignored_traces_count = 0
     end
 
     def self.perform!(&block)
       self.new.execute(&block)
     end
 
+    def self.simple!(&block)
+      self.new.simple_execute(&block)
+    end
+
+    def simple_execute(&block)
+      tp = Tracer.new(:call, :raise) do |trace|
+        @traces << Trace.new("class: #{trace.defined_class}, path: #{trace.path}, lineno: #{trace.lineno}, method_id: #{trace.method_id}")
+      end
+
+      tp.enable
+      block.call
+      tp.disable
+      puts @traces
+    end
+
     def execute(&block)
-      tp = TracePoint.new(:call, :return, :raise) do |trace|
-        unless should_ignore_path?(trace.path)
+      tp = TracePoint.new(*watched_events) do |trace|
+        if !disable_filter && ignore_path?(trace)
+          @ignored_traces_count += 1
+        else
           traces << Trace.new(trace)
         end
       end
@@ -36,8 +60,8 @@ module Bugzilla
       self
     end
 
-    def each
-      @traces.each { |trace| yield trace }
+    def each(&block)
+      @traces.each(&block)
     end
 
     def trace(*args)
@@ -47,29 +71,11 @@ module Bugzilla
       nil
     end
 
-    def source_trace
-      traces.map do |t|
-        case t.event
-        when :return
-          t.source_code
-        when :return
-          "Return".white + " #{t.return_value}".cyanish + "    from #{t.method_id}"
-        when :raise
-          "Exception: #{t.exception}".red
-        end
-      end
-    end
 
-    def build_line(trace, *args)
-      line = [
-        colourise(trace.event, :event), colourise(trace.path, :path),
-        colourise(trace.lineno, :lineno), colourise(trace.method_id, :method_id)
-      ].join(' ')
+    protected
 
-      return line unless args
-      line + "\n" + args.map do |arg|
-        colourise(trace.send(arg), arg)
-      end.join('   ')
+    def ignore_path?(trace)
+      should_ignore_path?(trace.path) || should_ignore_method?(trace.method_id.to_s)
     end
 
     def colourise(text, arg)
@@ -77,5 +83,6 @@ module Bugzilla
       return "\e[#{colour_opts[arg]}m#{text}\e[0m" if colour_opts.key?(arg)
       text
     end
+
   end
 end
