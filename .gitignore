@@ -20,4 +20,6 @@
 .config
 .yardoc
 
-
+index.pb
+/temp
+.idea
