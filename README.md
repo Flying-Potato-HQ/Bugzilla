@@ -1,14 +1,13 @@
 # Bugzilla
 
-TODO: Delete this and the text below, and describe your gem
+Currently in Alpha. There will be bugs and some features may not work as expected.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/Bugzilla`. To experiment with that code, run `bin/console` for an interactive prompt.
+Todo: Installation
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
+Todo: Upload to rubygems.org and update the gem name below
 
     $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
 
@@ -18,16 +17,80 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+### Gathering a trace
 
-## Development
+```ruby
+trace = Tracer.perform! do
+  example_method
+end
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Analyzing a trace
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+trace.trace
+### Outputs the stack trace
+```
+
+Example:
+![trace.png](trace.png)
+
+```ruby
+trace.source_trace
+```
+**Example Output
+![source_trace.png](source_trace.png)
+
+### Options
+
+The options are a work in progress and are in need of improvement, along with overall project structure.  Currently options are set to each instance of `Tracer`.
+
+- `disable_filter`, default, `false`  # Disables all filters on stack trace
+- `colourise`, default, `true`, colourise output
+- `ignored_paths`, takes an array of strings for paths you want to reject.
+- `gsub_filters`, takes an array of strings.  gsubing them from stack traces.
+- @colour_opts = {
+    event: :light_red, # example
+    lineno: 
+    method_id:
+    args:
+    defined_class:
+    return_value:
+    exception:
+    instance_variables:
+    object_id:
+}
+
+**Supported colours**,
+
+`:blue`, `:light_red` , `:black` , `:purple` , `:light_green` , `:red` , `:cyan` , `:yellow` , `:green` , `:gray`, `:light_blue` , `:brown` , `:dark_gray` , `:light_purple` , `:white` , `:light_cyan`
+
+
+
+### Querying a trace
+
+```ruby
+trace.where(method_id: :example_method, method_id: :example_method)
+# all cases where both are try
+```
+
+```ruby
+trace.where_an(defined_class: :example_class, method_id: :example_method)
+# all cases where any condition true
+```
+
+```ruby
+trace.where_not(method_id: :example_method)
+# all cases where method_id is not example_method
+```
+
+Supported options:
+`defined_class`, `method_id`, `args`, `return_value`, `exception`, `instance_variables`, `object_id`
+
 
 ## Contributing
 
+TODO: Update the below
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/Bugzilla. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/Bugzilla/blob/master/CODE_OF_CONDUCT.md).
 
 ## License

@@ -7,8 +7,6 @@ I
 lib/Bugzilla/utilities.rb,4/6/4647da74c1d223bcdb07b8933ebdcbf48729a0e1
 L
 lib/Bugzilla/TraceHistory.rb,e/7/e7ce964a664eaf2637476619f1b77c248bf15dea
-<
-Gemfile.lock,2/1/21fb5836b499a2be648386aac055d2e069160d6c
 F
 lib/Bugzilla/errors.rb,b/8/b8cabbac1b79537fb6669df89508a5351e0fc4d2
 8
@@ -19,11 +17,6 @@ A
 sig/formatter.rbs,f/f/ffcd94dec3112475884b03d7d9d0af380f9a0dc6
 <
 .rubocop.yml,0/5/057477721d04f350346ebfb6554f5c0cd2d8aeaf
-:
-
-.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-7
-Gemfile,d/e/de3150c01c3a946a6168173c4116741379fe3579
 P
  sig/bugzilla/generic_helpers.rbs,7/9/79e5e5303642c3318d1c96baac8af1d67b19d937
 =
@@ -44,15 +37,11 @@ C
 sig/tty_helpers.rbs,f/b/fb9beafe4a70e125ae9db8e4cbcbd34e633fc65b
 U
 %lib/Bugzilla/utilities/tty_helpers.rb,9/0/90a5d0e3a9442e9824fa3b65588ebee65fab4020
-;
-bin/console,2/b/2b22d59fcdaf24a6d2536513e514e77fc83391a3
 V
 &lib/Bugzilla/utilities/debug_helper.rb,9/3/938f769ab2758d0c03f11846b8547ad98ac51657
 D
 lib/Bugzilla/dump.rb,3/5/356a42d64bfae82ca21fad34ba09f25008f81f81
 I
 lib/Bugzilla/formatter.rb,4/4/44d69d10a01f01c53a04b6cbc893a8a1571fc876
-?
-lib/bugzilla.rb,6/c/6cd236d5d6f0a0a3a153670d36aec2d94b7e5deb
 F
 lib/Bugzilla/tracer.rb,2/4/24555a32ea64c3a11ba63c326ba36bb98ddbf577

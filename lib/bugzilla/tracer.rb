@@ -68,9 +68,8 @@ module Bugzilla
       traces.each do |t|
         puts build_line(t, *args)
       end
-      nil
+      args[:return_result] ? traces : nil
     end
-
 
     protected
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: false
 
-require "pry" unless defined?(Pry)
+require "pry" if defined?(Pry)
 require "bundler/setup"
 require "Bugzilla"
 
@@ -31,7 +31,7 @@ class Speaker
   end
 end
 
-def do_thing
+def example_method
   Tracer.perform! do
     puts Speaker.new.hello
   end

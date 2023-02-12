@@ -21,6 +21,11 @@ RSpec.describe Bugzilla do
     it "should have a count of ignored traces" do
       expect(@tracer.ignored_traces_count).to be_a(Integer)
     end
+
+    it "should be able to output a trace of the results" do
+      expect(@tracer.trace).to be_a(Array)
+      expect(@tracer.trace.first).to be_a(Tracer::Trace)
+    end
   end
 
   describe "Tracer::Trace" do
